@@ -119,7 +119,7 @@ testParagon runJavaC = do
         if runJavaC
           then do
             (jout,jerr,_) <- runCommandStrWait
-              ("javac -cp " ++ paraRT ++ " " ++ replaceExtension program "java") ""
+              ("javac -cp " ++ paraRT ++ ":" ++ paraPI ++ replaceExtension program "java") ""
             isEmpty (jerr ++ jout)
           else return fault
  
@@ -146,7 +146,7 @@ testParagon runJavaC = do
       if runJavaC && null eout && (null . noCabalO) (err ++ out)
         then do
           (jout,jerr,_) <- runCommandStrWait
-            ("javac -cp " ++ paraRT ++ " " ++ relptoIssue </> replaceExtension file "java") ""
+            ("javac -cp " ++ paraRT ++ ":" ++ paraPI ++ relptoIssue </> replaceExtension file "java") ""
           return (jerr ++ jout)
         else return (err ++ out)
     fault <- isAsExpected (foldl (++) [] totalOut) eout

@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Language.Java.Paragon.PolicyLang.Locks where
 
+import Prelude hiding ((<>))
 --import Data.List (intersect, union, (\\) )
 
 import Language.Java.Paragon.Syntax (Name(..), Ident(..), NameType(LName))

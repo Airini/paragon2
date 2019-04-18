@@ -5,8 +5,6 @@ import Language.Java.Paragon.Syntax
 import Language.Java.Paragon.Interaction
 --import Language.Java.Paragon.QuasiQuoter
 
-import Control.Applicative
-
 import Data.Generics.Uniplate.Data
 import Data.Data
 

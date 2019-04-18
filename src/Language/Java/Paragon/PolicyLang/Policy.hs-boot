@@ -13,34 +13,32 @@ import {-# SOURCE #-} Language.Java.Paragon.TypeCheck.Types
 
 import Security.InfoFlow.Policy.FlowLocks
 
-import Control.Applicative
-
 #ifdef BASE4
 import Data.Data
 #else
 import Data.Generics (Data(..),Typeable(..))
 #endif
 
-data MetaVarRep
+data MetaVarRep deriving Typeable
 instance Data MetaVarRep
-instance Typeable MetaVarRep
+--instance Typeable MetaVarRep
 instance Eq MetaVarRep
 instance Ord MetaVarRep
 instance Show MetaVarRep
 instance Pretty MetaVarRep
 
 
-data PolicyVarRep
+data PolicyVarRep deriving Typeable
 instance Data PolicyVarRep
-instance Typeable PolicyVarRep
+--instance Typeable PolicyVarRep
 instance Eq PolicyVarRep
 instance Ord PolicyVarRep
 instance Show PolicyVarRep
 instance Pretty PolicyVarRep
 
-data ActorSetRep
+data ActorSetRep deriving Typeable
 instance Data ActorSetRep
-instance Typeable ActorSetRep
+--instance Typeable ActorSetRep
 instance Eq ActorSetRep
 instance Ord ActorSetRep
 instance Show ActorSetRep

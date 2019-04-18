@@ -2,6 +2,8 @@
 module Language.Java.Paragon.PolicyLang.Actors where
 
 
+import Prelude hiding ((<>))
+
 import Language.Java.Paragon.Syntax
 import Language.Java.Paragon.Pretty
 
@@ -11,8 +13,6 @@ import Language.Java.Paragon.TypeCheck.Types (TcRefType)
 import Security.InfoFlow.Policy.FlowLocks.Actor
 
 import Language.Java.Paragon.Monad.Base
-
-import Control.Applicative
 
 import qualified Data.ByteString.Char8 as B
 

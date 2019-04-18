@@ -27,7 +27,6 @@ import Language.Java.Paragon.TypeCheck.NullAnalysis()
 -- import Language.Java.Paragon.TypeCheck.Interpreter
 
 import Control.Monad ()
-import Control.Applicative
 
 import qualified Data.Map as Map ()
 import qualified Data.ByteString.Char8 as B

@@ -164,8 +164,8 @@ compile flags filePath = do
   
    where withDefaultErrCtxt = withErrCtxt EmptyContext
          compilationStages pDirs fc = do
-   	   -- Converting to abstract syntax tree
-	   ast <- liftEitherMB . convertParseToErr $ parser compilationUnit fc
+           -- Converting to abstract syntax tree
+           ast <- liftEitherMB . convertParseToErr $ parser compilationUnit fc
            raiseErrors
 	   detailPrint "Parsing complete!"
 	   -- Name resolution

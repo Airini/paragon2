@@ -1,9 +1,10 @@
-module Test where
+module Main where
 
-import RunCommand
+import RunCommand (runCommandStrWait)
 import KompTest
 
 import Data.List
+import Data.List.Extra (splitOn, breakOnEnd)
 import Data.Maybe
 import System.Directory
 import System.Environment
@@ -31,22 +32,32 @@ cmd c = do
   putStrLn err
 
 getAll g = do
-  c <- getCurrentDirectory
-  dirs <- getDirectoryContents (c </> g)
-  files <- forM dirs $ \dir -> do 
-    f1 <- getDirectoryContents (c </> g </> dir)
-    f2 <- liftM sort (filterM (\x -> return (isSuffixOf ".para" x)) f1)
-    mapM (\x -> return $ dir ++ "/" ++ x) f2
-  return (foldl (++) [] files)
-  
+    pwd  <- getCurrentDirectory
+    dirs <- getDirectoryContents (pwd </> ptog)
+    files <- forM dirs $ \dir -> do
+      f1 <- getDirectoryContents (pwd </> ptog </> dir)
+      f2 <- liftM sort (filterM (\x -> return (isSuffixOf ".para" x)) f1)
+      mapM (\x -> return $ ptog </> dir </> x) f2
+    return (foldl (++) [] files)
+  where ptog = testsuiteDir </> g
+
 getAllIssues = do
   pwd <- getCurrentDirectory
-  isList <- getDirectoryContents (pwd </> "issues")
+  isList <- getDirectoryContents (pwd </> testsuiteDir </> "issues")
   filIssues <- filterM (\x -> return (isPrefixOf "issue" x)) isList
   return $ sort filIssues
-  
-isAsExpected str1 str2 = do 
-  if null str2 then do isEmpty str1 else
+
+paracViaCabal = "cabal new-run parac --"
+cabalOut      = "Up to date\n"
+testsuiteDir  = "simpletestsuite"
+paraRT        = "examples/lib/paragonRT.jar"
+paraPI        = "lib"
+
+noCabalPrefix s = fromMaybe s (stripPrefix cabalOut s)
+noCabalO = concat . splitOn cabalOut
+
+isAsExpected str1' str2 = do
+    if null str2 then do isEmpty str1 else
       if str1 == str2 then do
         putStrLn "ok"
         return 0
@@ -57,6 +68,7 @@ isAsExpected str1 str2 = do
         putStrLn $ color 1 "Received output"
         putStrLn $ color 3 $ str1
         return 1
+  where str1 = noCabalO str1'
 
 isEmpty str = do
   if null str then do
@@ -77,21 +89,15 @@ isNonEmpty str = do
 
 dropLast n l = reverse (drop n (reverse l))
 
-wordsWhen     :: (Char -> Bool) -> String -> [String]
-wordsWhen p s = case dropWhile p s of
-                      "" -> []
-                      s' -> w : wordsWhen p s''
-                            where (w, s'') = break p s'
-
 
 uglyErrorCheck e = do
   if e == "ExitSuccess" then do return 0 else do
     putStrLn $ color 1 "Error in compilation of parac."
     error "Test aborted."
-    
+
 
 compileParagon = do
-  (o,e,c) <- runCommandStrWait ("cabal install ../") ""
+  (o,e,c) <- runCommandStrWait "cabal new-build" ""
   putStrLn $ o ++ e
   uglyErrorCheck (show c)
 
@@ -102,44 +108,45 @@ testParagon runJavaC = do
   compileParagon
   
   putStrLn $ color 4 "Testing valid programs"
-  allGood <- getAll "good" 
+  allGood <- getAll "good"
   nfaultsG <- forM allGood $ \program -> do
-    putStr $ program ++ "... "
-    (out,err,code) <- runCommandStrWait ("parac --oldskool -p ../lib: good/" ++ program) ""
-    fault <- isEmpty (err ++ out)
+    putStr $ (snd $ breakOnEnd "good/" program) ++ "... "
+    (out,err,code) <- runCommandStrWait (paracViaCabal ++ " --oldskool -p " ++ paraPI ++ " " ++ program) ""
+    fault <- isAsExpected (err ++ out) ""
     if (fault == 1)
       then return fault
       else 
         if runJavaC
           then do
             (jout,jerr,_) <- runCommandStrWait
-              ("javac -classpath '.:../lib' good/" ++ replaceExtension program "java") ""
+              ("javac -cp " ++ paraRT ++ " " ++ replaceExtension program "java") ""
             isEmpty (jerr ++ jout)
           else return fault
-  
+ 
   putStrLn $ color 4 "\nTesting invalid programs"
-  allBad <- getAll "bad" 
+  allBad <- getAll "bad"
   nfaultsB <- forM allBad $ \program -> do
-    putStr $ program ++ "... "
-    (out,err,_) <- runCommandStrWait ("parac --oldskool -p ../lib: bad/" ++ program) ""
-    (eout,_,_) <- runCommandStrWait ("cat bad/" ++ (dropLast 4 program) ++ "exp") ""
+    putStr $ (snd $ breakOnEnd "bad/" program) ++ "... "
+    (out,err,_) <- runCommandStrWait (paracViaCabal ++ " --oldskool -p " ++ paraPI ++ " " ++ program) ""
+    (eout,_,_) <- runCommandStrWait ("cat " ++ (replaceExtension program "exp")) ""
     fault <- isAsExpected (err ++ out) eout
     return fault
   
   putStrLn $ color 4 "\nTesting issues"
   allIssues <- getAllIssues
   nfaultsI <- forM allIssues $ \issue -> do
+    let relptoIssue = testsuiteDir </> "issues" </> issue
     putStr $ issue ++ "... "
-    (clist,_,_) <- runCommandStrWait ("cat issues/" ++ issue ++ "/compile") ""
-    (eout,_,_) <- runCommandStrWait ("cat issues/" ++ issue ++ "/expected") ""
-    totalOut <- forM (wordsWhen ((==) '\n') clist) $ \file -> do
+    (clist,_,_) <- runCommandStrWait ("cat " ++ relptoIssue </> "compile") ""
+    (eout,_,_) <- runCommandStrWait ("cat " ++ relptoIssue </> "expected") ""
+    totalOut <- forM (lines clist) $ \file -> do
       (out,err,_) <- runCommandStrWait 
-                     ("parac --oldskool -p ../lib:issues/" ++ issue ++ 
-                      " issues/" ++ issue ++ "/" ++ file) ""
-      if runJavaC && null eout && null (err ++ out)
+                     (paracViaCabal ++ " --oldskool -p " ++ paraPI ++ ":" ++ relptoIssue ++
+                      " " ++ relptoIssue </> file) ""
+      if runJavaC && null eout && (null . noCabalO) (err ++ out)
         then do
           (jout,jerr,_) <- runCommandStrWait
-            ("javac -classpath '.:../lib' issues/" ++ issue ++ "/" ++ replaceExtension file "java") ""
+            ("javac -cp " ++ paraRT ++ " " ++ relptoIssue </> replaceExtension file "java") ""
           return (jerr ++ jout)
         else return (err ++ out)
     fault <- isAsExpected (foldl (++) [] totalOut) eout

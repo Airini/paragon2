@@ -20,7 +20,7 @@ import Language.Java.Paragon.TypeCheck.Types
 import Language.Java.Paragon.TypeCheck.TypeMap
 import Language.Java.Paragon.TypeCheck.NullAnalysis
 
-import Data.List ( (\\), nub, delete)
+import Data.List ( (\\) )
 import Data.Maybe (fromJust, isJust, fromMaybe)
 import qualified Data.Map as Map
 import Control.Applicative ( (<$>) )

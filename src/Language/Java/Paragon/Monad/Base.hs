@@ -21,7 +21,6 @@ module Language.Java.Paragon.Monad.Base
 import Language.Java.Paragon.Monad.Uniq
 import Language.Java.Paragon.Error
 
-import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State (StateT(..),runStateT,modify,get)
 -- import System.Exit()
@@ -107,11 +106,10 @@ class Monad m => MonadIO m where
 instance MonadIO IO where
   liftIO = id
 
+-- ^ Just execute the action without touching the (error) state
 instance MonadIO BaseM where
   liftIO ioa = BaseM $ \_ _ -> StateT (\s -> do x <- ioa
                                                 return (Just x, s))
-                               -- ^Just execute the action without touching
-                               -- the (error) state
 
 class MonadIO m => MonadBase m where
   -- | Lift BaseM computations to member of the MonadBase class

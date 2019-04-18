@@ -34,6 +34,8 @@ module Language.Java.Paragon.PolicyLang
      thisP, substThis, includesThis, includesThisVP
     ) where
 
+import Prelude hiding ((<>))
+
 import Language.Java.Paragon.SourcePos
 import Language.Java.Paragon.Error (Error)
 import Language.Java.Paragon.Syntax (Name)
@@ -48,7 +50,6 @@ import Language.Java.Paragon.PolicyLang.Policy
 --import Security.InfoFlow.Policy.Paralocks (ActorSetRep(..))
 import Security.InfoFlow.Policy.FlowLocks
 
-import Control.Applicative
 import qualified Data.ByteString.Char8 as B
 
 #ifdef BASE4

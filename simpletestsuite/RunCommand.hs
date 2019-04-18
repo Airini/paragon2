@@ -12,7 +12,7 @@ pipeGetContents :: Pipe -> IO String
 pipeGetContents p = 
     do
     s <- getChanContents p
-    return $ map fromLeft $ takeWhile isLeft s
+    return $ map (fromLeft undefined) $ takeWhile isLeft s
 
 pipeWrite :: Pipe -> String -> IO ()
 pipeWrite p s = writeList2Chan p (map Left s)
@@ -21,16 +21,6 @@ pipeWrite p s = writeList2Chan p (map Left s)
 pipeClose :: Pipe -> IO ()
 pipeClose p = writeChan p (Right ())
 
-
---
--- * Either utilities
---
-
-isLeft :: Either a b -> Bool
-isLeft = either (const True) (const False)
-
-fromLeft :: Either a b -> a
-fromLeft =  either id (error "fromLeft: Right")
 
 --
 -- * Various versions of runCommand

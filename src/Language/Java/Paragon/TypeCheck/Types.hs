@@ -4,6 +4,8 @@
              FlexibleInstances, UndecidableInstances #-}
 module Language.Java.Paragon.TypeCheck.Types where
 
+import Prelude hiding ((<>))
+
 import Language.Java.Paragon.Syntax hiding (Clause(..))
 import Language.Java.Paragon.Pretty
 import Language.Java.Paragon.Interaction
@@ -19,7 +21,6 @@ import Language.Java.Paragon.TypeCheck.NullAnalysis
 
 import qualified Data.ByteString.Char8 as B
 import Data.Maybe (isJust, fromJust)
-import Control.Applicative (Applicative, (<$>), (<*>))
 --import Text.PrettyPrint
 
 #ifdef BASE4

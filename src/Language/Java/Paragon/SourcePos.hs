@@ -1,8 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Language.Java.Paragon.SourcePos where
 -- | Simple module simulating SourcePos from ParSec that mainly
 -- states that Eq should consider all instances of SourcePos
 -- equal, to not mess up the existing code in Paragon.
+module Language.Java.Paragon.SourcePos where
+
 import Data.Data (Data)
 import Data.Typeable (Typeable)
 import Text.ParserCombinators.Parsec.Pos as PS hiding (SourcePos)

@@ -31,9 +31,9 @@ deriveAnnMany' = mapM deriveAnnOne
 deriveAnnOne :: Info -> Q Dec
 deriveAnnOne i =
   case i of
-    TyConI (DataD dcx n vsk cons _) ->
+    TyConI (DataD dcx n vsk _ cons _) ->
       annInstance dcx n (map unTyVarBndr vsk) (map doCons cons)
-    TyConI (NewtypeD dcx n vsk con _) ->
+    TyConI (NewtypeD dcx n vsk _ con _) ->
       annInstance dcx n (map unTyVarBndr vsk) [doCons con]
     _ -> error (modName ++ ".deriveAnn: unhandled: " ++ pprint i)
   where annInstance _ _ [] _ = error (modName ++ ".annInstance: unhandled " ++ pprint i)
@@ -44,7 +44,7 @@ deriveAnnOne i =
         ctxt dcx = fmap (dcx ++) . cxt . map annPred
         unTyVarBndr (PlainTV v) = v
         unTyVarBndr (KindedTV v _) = v
-        annPred n = classP ''Annotated [varT n]
+        annPred n = appT (conT ''Annotated) (varT n)
 
 doCons :: Con -> (ClauseQ, ClauseQ)
 doCons (NormalC c vs@((_,VarT n):sts)) =

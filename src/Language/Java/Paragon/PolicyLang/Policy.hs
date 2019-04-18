@@ -17,6 +17,8 @@ module Language.Java.Paragon.PolicyLang.Policy (
      ActorPolicy, AtomPolicy, ActorPolicyBounds
     ) -} ) where
 
+import Prelude hiding ((<>))
+
 --import Language.Java.Paragon.Syntax (Name)
 import Language.Java.Paragon.Pretty
 import Language.Java.Paragon.TypeCheck.Types
@@ -30,7 +32,6 @@ import Security.InfoFlow.Policy.FlowLocks
 --import Language.Java.Paragon.TypeCheck.Actors
 --import Language.Java.Paragon.TypeCheck.Locks
 
-import Control.Applicative
 import qualified Data.ByteString.Char8 as B
 --import Data.List ( (\\) {-, groupBy, nub-}  )
 --import Data.Maybe 

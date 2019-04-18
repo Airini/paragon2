@@ -7,6 +7,8 @@ module Language.Java.Paragon.TypeCheck.NullAnalysis
      nullable, committed, free,
      joinNT
     ) where
+
+import Prelude hiding ((<>))
 import Language.Java.Paragon.Pretty
 
 #ifdef BASE4

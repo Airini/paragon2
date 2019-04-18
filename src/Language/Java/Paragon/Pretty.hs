@@ -6,6 +6,8 @@ module Language.Java.Paragon.Pretty
      module Text.PrettyPrint
     ) where
 
+import Prelude hiding ((<>))
+
 import Text.PrettyPrint
 import Data.Char (toLower)
 import Control.Arrow (first)

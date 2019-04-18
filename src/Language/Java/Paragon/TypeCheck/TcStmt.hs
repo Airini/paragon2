@@ -17,10 +17,9 @@ import Language.Java.Paragon.TypeCheck.TypeMap
 import Language.Java.Paragon.TypeCheck.TcExp
 --import Language.Java.Paragon.TypeCheck.Evaluate
 
-import Control.Monad (unless, when)
+import Control.Monad (unless)
 import Control.Applicative ( (<$>) )
 --import Data.Maybe (fromJust)
-import Prelude hiding (catch)
 
 import qualified Data.ByteString.Char8 as B
 

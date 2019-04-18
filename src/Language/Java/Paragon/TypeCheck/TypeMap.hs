@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, FlexibleContexts #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, FlexibleContexts, MonoLocalBinds #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Language.Java.Paragon.TypeCheck.TypeMap where
 

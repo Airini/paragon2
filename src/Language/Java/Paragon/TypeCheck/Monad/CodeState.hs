@@ -24,7 +24,6 @@ import qualified Data.ByteString.Char8 as B
 import Data.List (intersect, union)
 import Data.Maybe (fromJust, catMaybes)
 import Control.Monad (zipWithM)
-import Control.Applicative 
 
 import Data.Data
 

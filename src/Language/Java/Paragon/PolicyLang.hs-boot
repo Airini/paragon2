@@ -10,8 +10,6 @@ import Language.Java.Paragon.SourcePos
 import Language.Java.Paragon.Syntax (Name)
 import Language.Java.Paragon.Pretty
 
-import Control.Applicative
-
 #ifdef BASE4
 import Data.Data
 #else
@@ -46,7 +44,7 @@ data ActorPolicyBounds
 instance Eq ActorPolicyBounds
 instance Show ActorPolicyBounds
 instance Data ActorPolicyBounds
-instance Typeable ActorPolicyBounds
+--instance Typeable ActorPolicyBounds
 instance Pretty ActorPolicyBounds
 
 {-

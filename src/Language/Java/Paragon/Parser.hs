@@ -50,11 +50,10 @@ import Text.ParserCombinators.Parsec hiding (SourcePos)
 -- import Text.ParserCombinators.Parsec.Pos as PSPos --(newPos)
 import Language.Java.Paragon.SourcePos -- as ParaPos -- as (SourcePos)
 
-import Prelude hiding ( exp, catch, (>>), (>>=) )
+import Prelude hiding ( exp, (>>), (>>=) )
 import qualified Prelude as P ( (>>), (>>=) ) 
 import qualified Data.ByteString.Char8 as B
 import Data.Maybe ( isJust, catMaybes, fromJust )
-import Control.Monad ( ap )
 import Control.Applicative ( Applicative(..), (<$>), (<*>) )
 import Control.Monad (unless)
 --import Control.Arrow ( first )
@@ -65,10 +64,6 @@ import Data.Data
 #else
 import Data.Generics (Data(..),Typeable(..))
 #endif
-
-instance Applicative (GenParser s a) where
-    pure  = return
-    (<*>) = ap
 
 -- import Debug.Trace (trace)
 

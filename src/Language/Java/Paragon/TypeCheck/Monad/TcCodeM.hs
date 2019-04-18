@@ -45,11 +45,10 @@ import Language.Java.Paragon.TypeCheck.Interpreter
 --import Language.Java.Paragon.TypeCheck.Containment
 
 import Control.Monad hiding (join)
-import Control.Applicative
+import qualified Control.Monad.Fail as MF
 --import Control.Arrow (second)
 
 import qualified Data.Map as Map
-import Data.List (union)
 import qualified Data.ByteString.Char8 as B
 
 tcCodeMModule :: String
@@ -183,6 +182,10 @@ instance Monad TcCodeM where
                       return (b, s2, cs1 ++ cs2)
 
   fail err = TcCodeM $ \_ _ -> fail err
+
+-- NB: MonadFail instance as per MFP
+instance MF.MonadFail TcCodeM where
+  fail = fail
 
 instance Functor TcCodeM where
   fmap = liftM

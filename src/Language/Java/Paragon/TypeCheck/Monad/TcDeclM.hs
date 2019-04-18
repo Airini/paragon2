@@ -56,7 +56,7 @@ import Language.Java.Paragon.TypeCheck.NullAnalysis
 import Language.Java.Paragon.TypeCheck.Interpreter
 
 import Control.Monad hiding (join)
-import Control.Applicative
+import qualified Control.Monad.Fail as MF
 
 import qualified Data.Map as Map
 import qualified Data.ByteString.Char8 as B
@@ -1214,6 +1214,10 @@ instance Monad TcDeclM  where
                        g ctm gtm' ty
 
   fail = liftPR . fail
+
+-- NB: MonadFail instance as per MFP
+instance MF.MonadFail TcDeclM where
+  fail = fail
 
 instance Functor TcDeclM  where
   fmap = liftM

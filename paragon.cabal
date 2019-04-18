@@ -8,7 +8,7 @@ Category:               Language
 Synopsis:               Paragon
 Description:            Paragon suite
 Stability:              Experimental
-Tested-with:            GHC==7.0.2
+Tested-with:            GHC==8.6.*
 Build-Type:             Simple
 Cabal-Version:          >= 1.8
 
@@ -28,12 +28,20 @@ Extra-Source-Files:     src/Language/Java/Paragon/Lexer.x
                         lib/se/chalmers/paragon/UniqueNameError.java
                         lib/se/chalmers/paragon/Util.java
 
+                        -- Test suite examples
+                        simpletestsuite/bad
+                        simpletestsuite/good
+                        simpletestsuite/issues
+
+                        -- Paragon JAR
+                        examples/lib/paragonRT.jar
+
 Flag base4
 
 Library
   Build-Tools:          alex >= 2.3
-  Build-Depends:        array >= 0.1, pretty >= 1.0, cpphs >= 1.3, parsec >= 2.1 && < 3, containers, transformers,
-                        uniplate == 1.6.1, template-haskell >= 2.7 && < 3, directory, filepath, bytestring,
+  Build-Depends:        array >= 0.1, pretty >= 1.0, cpphs >= 1.3, parsec >= 2.1 && < 3.2, containers, transformers,
+                        uniplate == 1.6.1, template-haskell >= 2.11 && < 3, directory, filepath, bytestring,
                         flowlocks-framework
 -- Package used for debug printout. Remove for production build:
                         , haskell-src-exts
@@ -123,8 +131,8 @@ Executable parac
 
 
   Build-Tools:          alex >= 2.3
-  Build-Depends:        array >= 0.1, pretty >= 1.0, cpphs >= 1.3, parsec >= 2.1 && < 3, containers, transformers, 
-                        uniplate == 1.6.1, directory, filepath, template-haskell >= 2.7 && < 3, bytestring,
+  Build-Depends:        array >= 0.1, pretty >= 1.0, cpphs >= 1.3, parsec >= 2.1 && < 3.2, containers, transformers,
+                        uniplate == 1.6.1, directory, filepath, template-haskell >= 2.11 && < 3, bytestring,
                         flowlocks-framework
 -- Package used for debug printout. Remove for production build:
                         , haskell-src-exts
@@ -136,3 +144,10 @@ Executable parac
 
   GHC-options:          -Wall -O2 -rtsopts
 
+
+Test-suite simple-test
+  type:                 exitcode-stdio-1.0
+  hs-source-dirs:       simpletestsuite
+  main-is:              Test.hs
+  build-depends:        base, process, directory, filepath, temporary, unix, extra
+  other-modules:        RunCommand, KompTest

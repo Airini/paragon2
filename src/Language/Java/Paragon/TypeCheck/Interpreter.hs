@@ -16,8 +16,8 @@ import Language.Java.Paragon.TypeCheck.TypeMap
 import Language.Java.Paragon.TypeCheck.Types
 
 import qualified Data.Map as Map
-import Control.Applicative
 import Control.Monad (forM_, ap)
+import qualified Control.Monad.Fail as MF
 
 import Data.Maybe (fromJust)
 import Data.List (nub, delete)
@@ -70,6 +70,10 @@ instance Monad InterpretM where
   EvalType rt f >>= k = EvalType rt (\rTy -> f rTy >>= k)
   SubTypeOf rt1 rt2 f >>= k = SubTypeOf rt1 rt2 (\b -> f b >>= k)
 
+-- NB: MonadFail instance as per MFP
+instance MF.MonadFail InterpretM where
+  fail = fail
+
 instance Applicative InterpretM where
   pure = return
   (<*>) = ap
@@ -84,13 +88,13 @@ instance HasSubTyping InterpretM where
 --lookupVarC n = liftTcDeclM $ lookupFieldD n
 type VMap = Map (Ident SourcePos) Value
 
-interpretPolicy :: forall m . (EvalPolicyM m) =>
+interpretPolicy :: forall m . (EvalPolicyM m, MF.MonadFail m) =>
                    (Name SourcePos -> m Value) -> Exp SourcePos -> m PL.PrgPolicy
 interpretPolicy lokup e = do
   VPol p <- runInterpretM lokup $ iExp e
   return p
 
-interpretTypeMethod :: forall m . (EvalPolicyM m) =>
+interpretTypeMethod :: forall m . (EvalPolicyM m, MF.MonadFail m) =>
                        (Name SourcePos -> m Value) -> MethodInvocation SourcePos -> m PL.PrgPolicy
 interpretTypeMethod lokup mi = do
   VPol p <- runInterpretM lokup $ iMethodInv mi
